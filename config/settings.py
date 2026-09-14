@@ -12,6 +12,7 @@ ALLOWED_HOSTS: list[str] = []
 
 INSTALLED_APPS = [
     "rest_framework",
+    "links",
 ]
 
 MIDDLEWARE = [
