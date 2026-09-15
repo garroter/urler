@@ -33,6 +33,37 @@ requestach.
 Brak wygasania linków - rekordy zostają w bazie na zawsze (celowo, poza
 zakresem tego API).
 
+## API
+
+```
+POST /api/shorten/  {"url": "..."} -> 201 {"code", "short_url", "url"}
+GET  /<code>/       -> 302 redirect (Location: oryginalny url) / 404
+```
+
+404 zwraca `{"detail": "Not found."}` (jawnie, zamiast domyślnego
+`get_object_or_404`) - tak żeby treść błędu była spójna z resztą API, a nie
+zawierała nazwy modelu Django w komunikacie.
+
+`url` jest walidowany jako poprawny URL przez DRF (`URLField` na podstawie
+pola modelu) — brak/zły format -> `400` z listą błędów per pole.
+
+### Ręczne testowanie (curl)
+
+```bash
+curl -X POST http://localhost:8000/api/shorten/ \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://szkolawchmurze.org/"}'
+# -> {"code": "...", "short_url": "http://localhost:8000/<code>/", "url": "..."}
+
+curl -i http://localhost:8000/<code>/
+# -> 302, Location: https://szkolawchmurze.org/
+
+curl -X POST http://localhost:8000/api/shorten/ \
+  -H "Content-Type: application/json" \
+  -d '{"url": "not-a-url"}'
+# -> 400 {"url": ["Enter a valid URL."]}
+```
+
 ## Testy
 
 ```bash
