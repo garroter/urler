@@ -23,12 +23,15 @@ uv run manage.py runserver
 ## Model danych
 
 `Link` (`links/models.py`): `code` (unikalny, indeksowany przez
-`unique=True` — służy zarówno do wymuszenia unikalności jak i do szybszego pobierania według kodu
+`unique=True` - służy zarówno do wymuszenia unikalności jak i do szybszego pobierania według kodu
 `GET /<code>/`), `url` oryginalny url z którego tworzymy skróconą wersję linku
 
-Zapis kodu musi łapać `IntegrityError` i ponawiać próbę przy kolizji -celowo
+Zapis kodu musi łapać `IntegrityError` i ponawiać próbę przy kolizji - celowo
 sam pre-check w Pythonie nie chroni przed wyścigiem przy równoległych
 requestach.
+
+Brak wygasania linków - rekordy zostają w bazie na zawsze (celowo, poza
+zakresem tego API).
 
 ## Testy
 
